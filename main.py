@@ -19,7 +19,7 @@ def albums_by_years():
     num_albums_by_years = dict(sorted(num_albums_by_years.items()))
     plt.scatter(num_albums_by_years.keys(), num_albums_by_years.values())
     plt.plot(num_albums_by_years.keys(), num_albums_by_years.values())
-    plt.savefig('1.feladat.png')
+    plt.savefig('yearly_albums1.png')
 
 def most_common_first_names():
     names_num={}
@@ -50,7 +50,36 @@ def most_common_first_names():
     x = list(minimum_10.values())
     y = list(minimum_10.keys())
     plt.barh(y, x)
-    plt.savefig('2.feladat.png')
+    plt.savefig('first_names1.png')
+    
+    
+def band_album_sizes():
+    bands_numbers={}
+    for i in range(1,8):
+        try:
+            bands_numbers[i]=0
+        except KeyError:
+            continue
+    bands_numbers['8+']=0
+    for band in os.listdir('albums'):
+        people = set()
+        for file in os.listdir(os.path.join('albums',band)):
+            try:
+                with open(os.path.join('albums', band, file)) as f:
+                    datas=json.load(f)
+                    people.update(datas['personnel'])  
+            except:
+                continue
+        if len(people) < 8:
+            try:
+                bands_numbers[len(people)] += 1
+            except KeyError:
+                continue
+        else:
+            bands_numbers['8+'] += 1
+    fig, ax= plt.subplots(2)
+    ax[0] = plt.pie(bands_numbers.values(), labels=bands_numbers.keys())
+    fig.savefig('piechart.png')
 
 if __name__ == '__main__':
-    most_common_first_names()
+    band_album_sizes()
